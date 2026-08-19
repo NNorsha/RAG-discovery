@@ -58,6 +58,25 @@ data/notes/      示例知识库(三篇 RAG/Embedding/Prompt 笔记)
 - Embedding 全程本地推理,文档内容不会发给任何第三方;
   仅提问时检索到的相关片段会随请求发给配置的 LLM 服务
 
+## 在线部署(让任何人通过链接访问)
+
+本项目可直接部署到 Streamlit Cloud(免费):
+
+1. Fork 本仓库到你自己的 GitHub 账号
+2. 打开 [share.streamlit.io](https://share.streamlit.io),用 GitHub 登录
+3. New app → 选择该仓库 → Main file path 填 `app.py` → Deploy
+4. 部署前在 Advanced settings → Secrets 中填入(对应 `.env` 的同名变量):
+
+```toml
+LLM_BASE_URL = "https://open.bigmodel.cn/api/paas/v4/"
+LLM_API_KEY = "你的 API key"
+LLM_MODEL = "glm-4-flash"
+```
+
+部署完成后会得到一个 `https://<app-name>.streamlit.app` 公开链接,任何人可访问。
+注意:公开部署意味着所有访客共用你的 LLM 额度,建议使用免费/限额模型,
+并留意知识库示例文档不要包含私人信息。
+
 ## 简历话术
 
 > 基于 RAG 架构独立开发个人知识库问答系统:实现 md/pdf/docx 多格式文档解析、
