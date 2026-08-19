@@ -11,3 +11,6 @@ data/*
 !data/notes/
 
 .deploy_mail.json
+
+.st_session.json
+.render_session.json
