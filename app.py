@@ -15,6 +15,13 @@ st.set_page_config(page_title="个人知识库问答", page_icon="📚", layout=
 DATA_DIR = Path(__file__).resolve().parent / "data"
 DATA_DIR.mkdir(exist_ok=True)
 
+# 首次启动(如云端部署)知识库为空时,自动入库自带示例文档
+if not rag.list_sources():
+    sample_files = rag.scan_folder(DATA_DIR)
+    if sample_files:
+        with st.spinner("首次启动,正在入库示例文档…"):
+            rag.ingest_files(sample_files)
+
 
 def render_sources(contexts: list[dict]) -> None:
     with st.expander(f"参考来源({len(contexts)} 条)"):
@@ -36,7 +43,7 @@ with st.sidebar:
         type=["md", "txt", "pdf", "docx"],
         accept_multiple_files=True,
     )
-    folder = st.text_input("或扫描本地文件夹", value=str(DATA_DIR))
+    folder = st.text_input("或扫描文件夹(相对项目目录)", value="data")
 
     if st.button("入库", type="primary", use_container_width=True):
         files: list[Path] = []
@@ -45,6 +52,8 @@ with st.sidebar:
             target.write_bytes(f.getbuffer())
             files.append(target)
         folder_path = Path(folder)
+        if not folder_path.is_absolute():
+            folder_path = Path(__file__).resolve().parent / folder_path
         if folder_path.is_dir():
             files.extend(rag.scan_folder(folder_path))
         files = sorted(set(files))

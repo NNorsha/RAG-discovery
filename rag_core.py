@@ -19,6 +19,16 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Streamlit Cloud 部署时从 st.secrets 读取配置(本地 .env 优先)
+try:
+    import streamlit as st
+
+    for _k in ("LLM_BASE_URL", "LLM_API_KEY", "LLM_MODEL", "EMBED_MODEL"):
+        if not os.getenv(_k) and _k in st.secrets:
+            os.environ[_k] = st.secrets[_k]
+except Exception:
+    pass
+
 BASE_DIR = Path(__file__).resolve().parent
 CHROMA_DIR = BASE_DIR / ".chroma"
 COLLECTION_NAME = "knowledge_base"
