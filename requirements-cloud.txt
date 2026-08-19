@@ -1,0 +1,8 @@
+# 云端部署精简依赖(EMBED_BACKEND=api 时无需本地模型/ONNX 运行时,
+# 内存占用从 ~800MB 降到 ~350MB,适配 512MB 免费实例)
+streamlit>=1.36
+chromadb>=0.5.23
+openai>=1.40
+pypdf>=4.2
+python-docx>=1.1
+python-dotenv>=1.0

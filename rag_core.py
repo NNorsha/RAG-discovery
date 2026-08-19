@@ -1,6 +1,7 @@
 """RAG 核心模块:文档加载 -> 分块 -> 向量化 -> 检索 -> 生成。
 
-向量模型: BGE-small-zh(本地运行,零 API 成本)
+向量模型: 本地 BGE-small-zh(EMBED_BACKEND=local,零 API 成本)
+          或 OpenAI 兼容 Embedding 接口(EMBED_BACKEND=api,云端部署省内存)
 向量库:   ChromaDB(本地持久化,余弦相似度 / HNSW)
 LLM:     任意 OpenAI 兼容接口,通过 .env 配置
 """
@@ -23,7 +24,8 @@ load_dotenv()
 try:
     import streamlit as st
 
-    for _k in ("LLM_BASE_URL", "LLM_API_KEY", "LLM_MODEL", "EMBED_MODEL"):
+    for _k in ("LLM_BASE_URL", "LLM_API_KEY", "LLM_MODEL", "EMBED_BACKEND",
+               "EMBED_MODEL", "EMBED_BASE_URL", "EMBED_API_KEY"):
         if not os.getenv(_k) and _k in st.secrets:
             os.environ[_k] = st.secrets[_k]
 except Exception:
@@ -31,8 +33,16 @@ except Exception:
 
 BASE_DIR = Path(__file__).resolve().parent
 CHROMA_DIR = BASE_DIR / ".chroma"
-COLLECTION_NAME = "knowledge_base"
-EMBED_MODEL = os.getenv("EMBED_MODEL", "BAAI/bge-small-zh-v1.5")
+EMBED_BACKEND = os.getenv("EMBED_BACKEND", "local")  # local | api
+# 两种后端的向量维度不同,用不同 collection 隔离,避免混库
+COLLECTION_NAME = "knowledge_base" if EMBED_BACKEND == "local" else "knowledge_base_api"
+EMBED_MODEL = os.getenv(
+    "EMBED_MODEL",
+    "BAAI/bge-small-zh-v1.5" if EMBED_BACKEND == "local" else "embedding-3",
+)
+# 本地 .env 里若残留 HF 风格模型名,API 模式下强制用服务端模型
+if EMBED_BACKEND == "api" and "/" in EMBED_MODEL:
+    EMBED_MODEL = "embedding-3"
 SUPPORTED_EXTS = {".md", ".txt", ".pdf", ".docx"}
 
 # 本地模型目录(无 HF 网络时用 export_onnx.py 生成,见 README)
@@ -56,6 +66,15 @@ def _get_embedder():
 
 
 def embed_texts(texts: list[str]) -> list[list[float]]:
+    if EMBED_BACKEND == "api":
+        from openai import OpenAI
+
+        client = OpenAI(
+            base_url=os.getenv("EMBED_BASE_URL", os.getenv("LLM_BASE_URL")),
+            api_key=os.getenv("EMBED_API_KEY", os.getenv("LLM_API_KEY")),
+        )
+        resp = client.embeddings.create(model=EMBED_MODEL, input=texts)
+        return [d.embedding for d in resp.data]
     return [v.tolist() for v in _get_embedder().embed(texts)]
 
 
