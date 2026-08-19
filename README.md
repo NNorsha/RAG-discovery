@@ -20,7 +20,7 @@
 ## 快速开始
 
 ```powershell
-pip install -r requirements.txt
+pip install -r requirements-local.txt   # 本地模式(含离线向量模型);云端部署用 requirements.txt
 copy .env.example .env     # 然后编辑 .env 填入 LLM key
 python ingest.py           # 入库 ./data 下的文档(也可在网页里上传)
 streamlit run app.py       # 打开 http://localhost:8501
@@ -71,6 +71,9 @@ data/notes/      示例知识库(三篇 RAG/Embedding/Prompt 笔记)
 LLM_BASE_URL = "https://open.bigmodel.cn/api/paas/v4/"
 LLM_API_KEY = "你的 API key"
 LLM_MODEL = "glm-4-flash"
+# 云端用 API 做向量化,无需下载本地模型,内存占用减半
+EMBED_BACKEND = "api"
+EMBED_MODEL = "embedding-3"
 ```
 
 部署完成后会得到一个 `https://<app-name>.streamlit.app` 公开链接,任何人可访问。

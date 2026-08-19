@@ -1,0 +1,4 @@
+# 本地完整依赖:在 requirements.txt 基础上增加本地向量模型支持
+# (EMBED_BACKEND=local 时使用,离线 BGE Embedding,零 API 成本)
+-r requirements.txt
+fastembed>=0.4
