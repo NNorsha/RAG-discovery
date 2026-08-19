@@ -1,0 +1,11 @@
+.env
+.chroma/
+models/
+__pycache__/
+*.pyc
+.venv/
+
+# 私人文档不进 git(网页上传或放入 data/ 的文件默认被忽略);
+# 仅 data/notes/ 下的示例笔记会被提交,换成你自己的可公开内容即可
+data/*
+!data/notes/
