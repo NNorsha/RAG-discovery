@@ -16,7 +16,7 @@ import streamlit as st
 
 import rag_core as rag
 
-st.set_page_config(page_title="个人知识库问答", page_icon="📚", layout="wide")
+st.set_page_config(page_title="Norsha问答", page_icon="📚", layout="wide")
 
 DATA_DIR = Path(__file__).resolve().parent / "data"
 DATA_DIR.mkdir(exist_ok=True)
@@ -98,11 +98,7 @@ with st.sidebar:
 
 # ------------------------------------------------- 主区:问答
 
-<<<<<<< HEAD
 st.title("Norsha写书中...随便提问")
-=======
-st.title("个人知识库问答")
->>>>>>> e6b7f722f10d0a2104525ea5f0a2883dd39ae081
 st.caption("基于 RAG:向量检索本地文档,LLM 依据资料生成带来源引用的回答")
 
 if "messages" not in st.session_state:
