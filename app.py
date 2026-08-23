@@ -1,7 +1,12 @@
 """个人知识库问答 —— Streamlit 界面。
+<<<<<<< HEAD
 ### 终端---cd "J:\1AI工具\Codex1\RAG\RAG-discovery-main"
 ### streamlit run app.py       ctrl+C停止
 
+=======
+
+运行: streamlit run app.py
+>>>>>>> e6b7f722f10d0a2104525ea5f0a2883dd39ae081
 """
 from __future__ import annotations
 
@@ -93,7 +98,11 @@ with st.sidebar:
 
 # ------------------------------------------------- 主区:问答
 
+<<<<<<< HEAD
 st.title("Norsha写书中...随便提问")
+=======
+st.title("个人知识库问答")
+>>>>>>> e6b7f722f10d0a2104525ea5f0a2883dd39ae081
 st.caption("基于 RAG:向量检索本地文档,LLM 依据资料生成带来源引用的回答")
 
 if "messages" not in st.session_state:
